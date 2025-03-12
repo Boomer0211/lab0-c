@@ -137,7 +137,7 @@ bool q_delete_dup(struct list_head *head)
         element_t *e = list_entry(li, element_t, list);
         const element_t *e_next = list_entry(li->next, element_t, list);
         /*  If found duplicate nodes, store the duplicate word to s,
-         *  then delete duplicate nodes until found different words.
+         *  then delete duplicate nodes until found different value.
          */
         if (strcmp(e->value, e_next->value) == 0) {
             struct list_head *prev = li->prev;
@@ -217,7 +217,7 @@ void merge(struct list_head *head,
     while (!list_empty(left) && !list_empty(right)) {
         element_t *l = list_first_entry(left, element_t, list);
         element_t *r = list_first_entry(right, element_t, list);
-        if (strcmp(l->value, r->value) < 0)
+        if (strcmp(l->value, r->value) <= 0)
             list_move_tail(&l->list, head);
         else
             list_move_tail(&r->list, head);
