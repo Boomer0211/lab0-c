@@ -4,6 +4,8 @@
 
 #include "queue.h"
 
+#define MAX_STR_LEN 512
+
 /* Create an empty queue */
 struct list_head *q_new()
 {
@@ -132,26 +134,22 @@ bool q_delete_dup(struct list_head *head)
     if (!head || list_empty(head))
         return false;
 
+    char s[MAX_STR_LEN];
     struct list_head *li = head->next;
     while (li != head && li->next != head) {
         element_t *e = list_entry(li, element_t, list);
         const element_t *e_next = list_entry(li->next, element_t, list);
-        /*  If found duplicate nodes, store the duplicate word to s,
-         *  then delete duplicate nodes until found different value.
-         */
         if (strcmp(e->value, e_next->value) == 0) {
-            struct list_head *prev = li->prev;
-            char *s = strdup(e->value);
+            strncpy(s, e->value, MAX_STR_LEN - 1);
+            s[MAX_STR_LEN - 1] = '\0';
             while (strcmp(e->value, s) == 0) {
                 li = li->next;
+                list_del(&e->list);
                 q_release_element(e);
                 if (li == head)
                     break;
                 e = list_entry(li, element_t, list);
             }
-            free(s);
-            prev->next = li;
-            li->prev = prev;
         } else
             li = li->next;
     }
